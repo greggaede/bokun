@@ -1,4 +1,4 @@
-import type { MetaFunction } from "@remix-run/node";
+import type { MetaFunction, LoaderFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { Experience, GetAllExperiences } from '~/data';
 import EditIcon from '~/components/IconEdit';
@@ -11,16 +11,16 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-export const loader = async () => {
+export const loader: LoaderFunction = async () => {
   return await GetAllExperiences();
 };
 
 export default function Index() {
-  const experiences : Array<Experience> = useLoaderData<typeof loader>();
+  const experiences: Array<Experience> = useLoaderData<typeof loader>();
 
   return (
     <div className="flex h-screen items-center justify-center">
-      <div className="flex flex-col items-center gap-16">
+      <div className="flex flex-col items-center gap-16 max-w-5xl">
         <header className="flex flex-col items-center gap-9">
           <h1 className="leading text-3xl font-bold text-orange-800 dark:text-orange-500">
             Welcome to my Bókun frontend assignment!
