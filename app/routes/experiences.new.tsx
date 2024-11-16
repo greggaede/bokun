@@ -1,5 +1,5 @@
 import type { MetaFunction, ActionFunction } from "@remix-run/node";
-import { Form, useActionData } from "@remix-run/react";
+import { Form, redirect } from "@remix-run/react";
 import Button from "~/components/Button";
 import { AddExperience } from "~/data";
 import { useState } from "react";
@@ -18,40 +18,20 @@ export const action: ActionFunction = async ({ request }) => {
   const rating = formData.get('rating')?.toString();
   const description = formData.get('description')?.toString();
   const imageUrl = formData.get('imageUrl')?.toString();
-  let success = false;
 
   if (title && rating && description && imageUrl) {
-    await AddExperience(title, rating, description, imageUrl);
-    success = true;
+    const response = await AddExperience(title, rating, description, imageUrl);
+    throw redirect(`/experiences/${response.id}`);
   }
 
-  return { success: success };
+  return null;
 };
 
-type ActionData = {
-  success: boolean
-}
-
 export default function ExperienceNew() {
-  const actionData = useActionData<ActionData>();
   const [titleEdit, setTitleEdit] = useState<string>('');
   const [ratingEdit, setRatingEdit] = useState<string>('');
   const [descriptionEdit, setDescriptionEdit] = useState<string>('');
   const [imageEdit, setImageEdit] = useState<string>('');
-
-  const displayFormMessage = () => {
-    if (actionData && actionData.success) {
-      return (
-        <p>New experience created!</p>
-      );
-    } else if (actionData) {
-      return (
-        <p className="text-red-500">Something went wrong!</p>
-      );
-    }
-
-    return null;
-  }
 
   return (
     <div className="flex flex-col h-screen items-center justify-center">
@@ -70,7 +50,6 @@ export default function ExperienceNew() {
                 <Input type="textarea" name="description" value={descriptionEdit} placeholder="Please enter description here" onChange={(e: React.ChangeEvent<HTMLInputElement>) => setDescriptionEdit(e.target.value)} />
               </div>
               <Button>Save changes</Button>
-              {displayFormMessage()}
             </div>
           </div>
           <div className="flex-shrink-0 min-w-[242px] max-w-[500px] flex flex-col gap-2">

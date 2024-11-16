@@ -1,5 +1,5 @@
 import type { MetaFunction, LoaderFunction, ActionFunction } from "@remix-run/node";
-import { Form, useLoaderData, useActionData, redirect } from "@remix-run/react";
+import { Form, useLoaderData, redirect } from "@remix-run/react";
 import DeleteIcon from '~/components/IconDelete';
 import Button from "~/components/Button";
 import { Experience, GetExperience, RemoveExperience, SetExperience } from "~/data";
@@ -29,7 +29,6 @@ export const action: ActionFunction = async ({ request }) => {
   const rating = formData.get('rating')?.toString();
   const description = formData.get('description')?.toString();
   const imageUrl = formData.get('imageUrl')?.toString();
-  let success = false;
 
   if (id && title && rating && description && imageUrl) {
     await SetExperience({
@@ -39,19 +38,14 @@ export const action: ActionFunction = async ({ request }) => {
       description,
       imageUrl
     });
-    success = true;
+    throw redirect(`/experiences/${id}`);
   }
 
-  return { success: success };
+  return null;
 };
-
-type ActionData = {
-  success: boolean
-}
 
 export default function ExperienceEdit() {
   const { id, title, rating, description, imageUrl } : Experience = useLoaderData<typeof loader>();
-  const actionData = useActionData<ActionData>();
   const [titleEdit, setTitleEdit] = useState<string>(title);
   const [ratingEdit, setRatingEdit] = useState<string>(rating);
   const [descriptionEdit, setDescriptionEdit] = useState<string>(description);
@@ -64,20 +58,6 @@ export default function ExperienceEdit() {
 
   const onCloseDeleteDialog = () => {
     setDeleteDialogActive(false);
-  }
-
-  const displayFormMessage = () => {
-    if (actionData && actionData.success) {
-      return (
-        <p>Saved changes!</p>
-      );
-    } else if (actionData) {
-      return (
-        <p className="text-red-500">Something went wrong!</p>
-      );
-    }
-
-    return null;
   }
 
   return (
@@ -98,7 +78,6 @@ export default function ExperienceEdit() {
                 <Input type="textarea" name="description" value={descriptionEdit} placeholder="Please enter description here" onChange={(e: React.ChangeEvent<HTMLInputElement>) => setDescriptionEdit(e.target.value)} />
               </div>
               <Button>Save changes</Button>
-              {displayFormMessage()}
             </div>
           </div>
           <div className="flex-shrink-0 min-w-[242px] max-w-[500px] flex flex-col gap-2">
