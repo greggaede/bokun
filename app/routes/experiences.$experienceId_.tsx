@@ -36,7 +36,7 @@ export default function ExperienceDetails() {
                 <p>{description}</p>
               </div>
             </div>
-            <div className="flex justify-between gap-2 w-full">
+            <div className="flex justify-between gap-2 w-full mt-10">
               <Button href={`/experiences/${id}/edit`}><EditIcon color="stroke-white" /> Edit Experience</Button>
               <Button href="/experiences">Back</Button>
             </div>

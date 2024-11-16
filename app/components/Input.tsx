@@ -9,7 +9,7 @@ type InputProps = {
 export default function Input({ name, value, type, placeholder, onChange } : InputProps) {
   if (type === 'textarea') {
     return (
-      <textarea name={name} value={value} placeholder={placeholder} onChange={(e) => onChange && onChange(e)} className="border rounded-full px-3 py-2" />
+      <textarea name={name} value={value} placeholder={placeholder} onChange={(e) => onChange && onChange(e)} className="border rounded-2xl px-3 py-2" />
     );
   }
 
